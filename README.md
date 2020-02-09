@@ -1,2 +1,2 @@
-# Homwork-10
+# Homework-10
 Server sided note taker.
