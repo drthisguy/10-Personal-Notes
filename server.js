@@ -15,7 +15,11 @@ app.get("/", (req, res) => {
   });
   
 
-
-  app.listen(PORT, () => {
-    console.log("App listening on PORT " + PORT);
+app.get("/notes", (req, res) => {
+    res.sendFile(path.join(__dirname, "/public/notes.html"))
   });
+  
+
+app.listen(PORT, () => {
+  console.log("App listening on PORT " + PORT);
+});
