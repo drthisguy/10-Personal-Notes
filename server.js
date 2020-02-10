@@ -6,6 +6,7 @@ const express = require('express'),
 const app = express(),
     PORT = process.env.PORT || 3000;
 
+  //Set up the express app
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
   app.use(express.static(path.join(__dirname, 'public')));
@@ -36,7 +37,7 @@ const app = express(),
           if(err) throw err;
         })
       })()
-    res.json(journal);
+    res.json({ Ok: true });
   });
 
   //removes note from db
@@ -50,7 +51,7 @@ const app = express(),
           if(err) throw err;
         })
       })()
-    res.json(journal);
+    res.json({ Ok: true });
   })
 
 
