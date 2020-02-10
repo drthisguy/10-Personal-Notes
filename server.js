@@ -21,14 +21,13 @@ app.get("/", (req, res) => {
 app.get("/notes", (req, res) => {
     res.sendFile(path.join(__dirname, "/public/notes.html"))
   });
-  
 
 app.post("/api/notes", (req, res) => {
   let newNote = req.body;
-  console.log(newNote);
+  newNote.title = newNote.title.replace(/\s+/g, '').toLowerCase();
   journal.push(newNote);
-  res.json(newNote);
-});
+  res.json(journal);
+})
 
 
 app.listen(PORT, () => {
