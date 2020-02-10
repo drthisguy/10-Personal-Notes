@@ -7,7 +7,7 @@ const app = express(),
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.get("/", (req, res) => {
@@ -26,6 +26,13 @@ app.post("/api/notes", (req, res) => {
   let newNote = req.body;
   newNote.title = newNote.title.replace(/\s+/g, '').toLowerCase();
   journal.push(newNote);
+  res.json(journal);
+});
+
+app.delete("/api/notes/:title", (req, res) => {
+  const removed = req.params.title,
+    pos = journal.findIndex( i => i.title === removed);
+    journal.splice(pos);
   res.json(journal);
 })
 
