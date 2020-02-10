@@ -1,40 +1,51 @@
 const express = require('express'),
     path = require('path'),
+    fs = require('fs'),
     journal = require('./journal.json');
 
 const app = express(),
     PORT = process.env.PORT || 3000;
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json());
+  app.use(express.static(path.join(__dirname, 'public')));
 
-
-app.get("/", (req, res) => {
+  //serves main page
+  app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "/public/index.html"))
   });
+
+  //serves note taking page
+  app.get("/notes", (req, res) => {
+    res.sendFile(path.join(__dirname, "/public/notes.html"))
+  });
   
+  //serves all notes from db
   app.get("/api/notes", (req, res) => {
     return res.json(journal);
   });
 
-app.get("/notes", (req, res) => {
-    res.sendFile(path.join(__dirname, "/public/notes.html"))
+  //adds new note to db  
+  app.post("/api/notes", (req, res) => {
+    let newNote = req.body;
+    console.log(newNote.title);
+    newNote.title = newNote.title.toLowerCase().replace(/\s+/g, '');
+    journal.push(newNote);
+    (async () => {
+      await fs.writeFile('journal.json', JSON.stringify(journal), err => {
+        if(err) throw err;
+      })
+    })()
+    res.json(journal);
   });
 
-app.post("/api/notes", (req, res) => {
-  let newNote = req.body;
-  newNote.title = newNote.title.replace(/\s+/g, '').toLowerCase();
-  journal.push(newNote);
-  res.json(journal);
-});
-
-app.delete("/api/notes/:title", (req, res) => {
-  const removed = req.params.title,
-    pos = journal.findIndex( i => i.title === removed);
-    journal.splice(pos);
-  res.json(journal);
-})
+  //removes note from db
+  app.delete("/api/notes/:title", (req, res) => {
+    const removed = req.params.title,
+      pos = journal.findIndex( i => i.title === removed);
+      journal.splice(pos);
+    res.json(journal);
+  })
 
 
 app.listen(PORT, () => {
