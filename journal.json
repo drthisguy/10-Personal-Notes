@@ -1,1 +1,21 @@
-[{"title":"tests","body":"asfdfsd","journal":"food"},{"title":"lskfjsdlk","body":"sdjlfkjdsklf","journal":"excercise"},{"title":"ouch","body":"dude","journal":"food"},{"title":"atestpost","body":"some other test post","journal":"food"}]
+[
+    {
+        "title": "tests",
+        "text": "asfdfsd",
+        "journal": "food"
+    },
+    {
+        "title": "ouch",
+        "text": "dude",
+        "journal": "food"
+    },
+    {
+        "title": "atestpost",
+        "text": "some other test post",
+        "journal": "food"
+    },
+    {
+        "title": "jamesbrowndanceparty",
+        "text": "Be there or be square!!\n"
+    }
+]

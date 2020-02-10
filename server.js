@@ -28,14 +28,14 @@ const app = express(),
   //adds new note to db  
   app.post("/api/notes", (req, res) => {
     let newNote = req.body;
-    console.log(newNote.title);
-    newNote.title = newNote.title.toLowerCase().replace(/\s+/g, '');
-    journal.push(newNote);
-    (async () => {
-      await fs.writeFile('journal.json', JSON.stringify(journal), err => {
-        if(err) throw err;
-      })
-    })()
+      newNote.title = newNote.title.toLowerCase().replace(/\s+/g, '');
+      journal.push(newNote);
+
+      (async () => {
+        await fs.writeFile('journal.json', JSON.stringify(journal), err => {
+          if(err) throw err;
+        })
+      })()
     res.json(journal);
   });
 
@@ -43,7 +43,13 @@ const app = express(),
   app.delete("/api/notes/:title", (req, res) => {
     const removed = req.params.title,
       pos = journal.findIndex( i => i.title === removed);
-      journal.splice(pos);
+      journal.splice(pos, 1);
+
+      (async () => {
+        await fs.writeFile('journal.json', JSON.stringify(journal), err => {
+          if(err) throw err;
+        })
+      })()
     res.json(journal);
   })
 
