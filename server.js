@@ -3,7 +3,7 @@ const express = require('express'),
     journal = require('./journal.json');
 
 const app = express(),
-    PORT = 3000;
+    PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -14,11 +14,22 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "/public/index.html"))
   });
   
+  app.get("/api/notes", (req, res) => {
+    return res.json(journal);
+  });
 
 app.get("/notes", (req, res) => {
     res.sendFile(path.join(__dirname, "/public/notes.html"))
   });
   
+
+app.post("/api/notes", (req, res) => {
+  let newNote = req.body;
+  console.log(newNote);
+  journal.push(newNote);
+  res.json(newNote);
+});
+
 
 app.listen(PORT, () => {
   console.log("App listening on PORT " + PORT);
