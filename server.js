@@ -6,6 +6,9 @@ const express = require('express'),
 const app = express(),
     PORT = process.env.PORT || 3000;
 
+let iterator = journal.length === 'undefined' ? 1 : journal.length;
+
+
   //Set up the express app
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
@@ -29,15 +32,15 @@ const app = express(),
   //adds new note to db  
   app.post("/api/notes", (req, res) => {
     let newNote = req.body;
-      newNote.title = newNote.title.toLowerCase().replace(/\s+/g, '');
+      newNote = addId(newNote); console.log(newNote);
       journal.push(newNote);
 
       (async () => {
         await fs.writeFile('journal.json', JSON.stringify(journal), err => {
           if(err) throw err;
         })
+        res.json(journal);
       })()
-    res.json({ Ok: true });
   });
 
   //removes note from db
@@ -50,10 +53,17 @@ const app = express(),
         await fs.writeFile('journal.json', JSON.stringify(journal), err => {
           if(err) throw err;
         })
+        res.json({ Ok: true });
       })()
-    res.json({ Ok: true });
   })
 
+  function addId(obj) {
+    if (typeof obj === 'object') {
+      iterator++;
+      obj.id = iterator;
+    }
+    return obj;
+  }
 
 app.listen(PORT, () => {
   console.log("App listening on PORT " + PORT);
