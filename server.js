@@ -6,9 +6,7 @@ const express = require('express'),
 const app = express(),
     PORT = process.env.PORT || 3000;
 
-let iterator = journal.length === 'undefined' ? 1 : journal.length;
-
-
+console.log(journal);
   //Set up the express app
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
@@ -26,14 +24,14 @@ let iterator = journal.length === 'undefined' ? 1 : journal.length;
   
   //serves all notes from db
   app.get("/api/notes", (req, res) => {
+    reSortIds(journal);
     return res.json(journal);
   });
 
   //adds new note to db  
   app.post("/api/notes", (req, res) => {
-    let newNote = req.body;
-      newNote = addId(newNote); console.log(newNote);
-      journal.push(newNote);
+    const newNote = req.body; 
+        journal.push(newNote);
 
       (async () => {
         await fs.writeFile('journal.json', JSON.stringify(journal), err => {
@@ -44,9 +42,9 @@ let iterator = journal.length === 'undefined' ? 1 : journal.length;
   });
 
   //removes note from db
-  app.delete("/api/notes/:title", (req, res) => {
-    const removed = req.params.title,
-      pos = journal.findIndex( i => i.title === removed);
+  app.delete("/api/notes/:id", (req, res) => {
+    const pos = req.params.id - 1;
+  
       journal.splice(pos, 1);
 
       (async () => {
@@ -55,14 +53,14 @@ let iterator = journal.length === 'undefined' ? 1 : journal.length;
         })
         res.json({ Ok: true });
       })()
-  })
+ });
 
-  function addId(obj) {
-    if (typeof obj === 'object') {
-      iterator++;
-      obj.id = iterator;
+
+  function reSortIds(arr) {
+    for (var i = 0; i < arr.length; i++) {
+          arr[i].id = i+1;
     }
-    return obj;
+    return arr
   }
 
 app.listen(PORT, () => {
