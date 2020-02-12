@@ -31,13 +31,15 @@ const app = express(),
   app.post("/api/notes", (req, res) => {
     const newNote = req.body; 
         notes.push(newNote);
-
+        
+    try {
       (async () => {
         await fs.writeFile('db/db.json', JSON.stringify(notes), err => {
           if(err) throw err;
         })
         res.json({ Ok: true });
       })()
+    } catch(err) {res.send(err)}
   });
 
   //removes note from db
@@ -45,12 +47,14 @@ const app = express(),
     const pos = req.params.id - 1;
       notes.splice(pos, 1);
 
+    try {
       (async () => {
         await fs.writeFile('db/db.json', JSON.stringify(notes), err => {
           if(err) throw err;
         })
         res.json({ Ok: true });
       })()
+    } catch(err) {res.send(err)}
  });
 
   //reorder all id#s sequentially after deletes/post.
