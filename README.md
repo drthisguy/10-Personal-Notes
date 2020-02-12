@@ -21,7 +21,7 @@ README.md
 
 # GitHub Repo:
 
-hhttps://github.com/drthisguy/Homework-10
+https://github.com/drthisguy/Homework-10
 
 # Deployed Website:
 
