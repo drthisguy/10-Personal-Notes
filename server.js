@@ -1,12 +1,11 @@
 const express = require('express'),
     path = require('path'),
     fs = require('fs'),
-    journal = require('./journal.json');
+    notes = require('./db/db.json');
 
 const app = express(),
     PORT = process.env.PORT || 3000;
 
-console.log(journal);
   //Set up the express app
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
@@ -22,47 +21,48 @@ console.log(journal);
     res.sendFile(path.join(__dirname, "/public/notes.html"))
   });
   
-  //serves all notes from db
+  //serves all notes from db & reassigns id#s sequentially. 
   app.get("/api/notes", (req, res) => {
-    reSortIds(journal);
-    return res.json(journal);
+    reSortIds(notes);
+    return res.json(notes)
   });
 
   //adds new note to db  
   app.post("/api/notes", (req, res) => {
     const newNote = req.body; 
-        journal.push(newNote);
+        notes.push(newNote);
 
       (async () => {
-        await fs.writeFile('journal.json', JSON.stringify(journal), err => {
+        await fs.writeFile('db/db.json', JSON.stringify(notes), err => {
           if(err) throw err;
         })
-        res.json(journal);
+        res.json({ Ok: true });
       })()
   });
 
   //removes note from db
   app.delete("/api/notes/:id", (req, res) => {
     const pos = req.params.id - 1;
-  
-      journal.splice(pos, 1);
+      notes.splice(pos, 1);
 
       (async () => {
-        await fs.writeFile('journal.json', JSON.stringify(journal), err => {
+        await fs.writeFile('db/db.json', JSON.stringify(notes), err => {
           if(err) throw err;
         })
         res.json({ Ok: true });
       })()
  });
 
-
+  //reorder all id#s sequentially after deletes/post.
   function reSortIds(arr) {
-    for (var i = 0; i < arr.length; i++) {
+    for (let i = 0; i < arr.length; i++) {
           arr[i].id = i+1;
     }
     return arr
   }
 
-app.listen(PORT, () => {
-  console.log("App listening on PORT " + PORT);
-});
+  app.listen(PORT, () => {
+    console.log("App listening on PORT " + PORT);
+  });
+
+ 
