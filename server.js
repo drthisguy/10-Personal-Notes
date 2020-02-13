@@ -36,7 +36,6 @@ const app = express(),
       (async () => {
         await fs.writeFile('db/db.json', JSON.stringify(notes), err => {
           if(err) throw err;
-          return;
         })
         res.json({ Ok: true });
       })()
@@ -52,7 +51,6 @@ const app = express(),
       (async () => {
         await fs.writeFile('db/db.json', JSON.stringify(notes), err => {
           if(err) throw err;
-          return;
         })
         res.json({ Ok: true });
       })()
